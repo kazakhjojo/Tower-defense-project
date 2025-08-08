@@ -1,6 +1,7 @@
 #include <stdio.h>
 #define IN_RANGE 500
 #define OUT_OF_RANGE 501
+#define LENGTH_OF_PATH 3
 
 typedef struct
 {
@@ -19,6 +20,7 @@ typedef struct
   char path_texture_;
   char placement_space_texture_;
   char map_edges_texture_;
+  char map_empty_space_textures_;
 } MapTextures;
 typedef struct 
 {
@@ -28,6 +30,7 @@ typedef struct
   int ending_row_;
   int beginning_column_;
   int ending_column_;
+  int coordinate_of_path_;
 } MapCharacteristics;
 int inBetween(int comparable_value, int the_lower_bound, int the_upper_bound)
 {
@@ -57,6 +60,7 @@ void appendMapTextures(MapTextures *input)
   input->path_texture_ = '#';
   input->placement_space_texture_ = '.';
   input->map_edges_texture_ = '=';
+  input->map_empty_space_textures_ = ' ';
 }
 void appendMapCharacteristics(MapCharacteristics *input)
 {
@@ -85,7 +89,22 @@ void printMap(MapCharacteristics the_map, MapTextures map_textures)
     {
       if((inBetween(index_1, the_map.beginning_row_, the_map.ending_row_) == IN_RANGE) && (inBetween(index_2, the_map.beginning_column_, the_map.ending_column_) == IN_RANGE))
       {
-        printf(" ");
+        if(index_2 == 18)
+        {
+          for (int index_3 = 0; index_3 < 3; index_3++)
+          {
+            printf("%c", map_textures.path_texture_);
+            if(index_3 == 2)
+            {
+              index_2 += index_3;
+            }
+          }
+        }
+        else
+        {
+          printf("%c", map_textures.map_empty_space_textures_);
+        }
+
       }
       else
       {

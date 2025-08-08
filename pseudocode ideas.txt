@@ -1,0 +1,6 @@
+n = number_of_columns
+for index from 0 to n - 1
+  if index at coordinate_of_path
+    print(map.path_texture_)
+  else
+    print(map.space texture)
