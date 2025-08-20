@@ -14,7 +14,15 @@ typedef struct
   char *top_;
   char *middle_;
   char *bottom_;
-} TowerTexture;
+  int x_coordinates_;
+  int y_coordinates_;
+  int top_x_coordinates_;
+  int top_y_coordinates_;
+  int middle_x_coordinates_;
+  int middle_y_coordinates_;
+  int bottom_x_coordinates_;
+  int bottom_y_coordinates_;
+} Tower;
 typedef struct
 {
   char path_texture_;
@@ -43,13 +51,25 @@ int inBetween(int comparable_value, int the_lower_bound, int the_upper_bound)
     return OUT_OF_RANGE;
   }
 }
+int ceil_My(double number)
+{
+  double temporary_variable = number - (int)number;
+  int the_result;
+  if (temporary_variable != 0)
+  {
+    double the_difference = 1 - temporary_variable;
+    number = number + the_difference;
+  }
+  the_result = (int)number;
+  return the_result;
+}
 void appendEnemyTexture(EnemyTexture *input)
 {
   input->head_ = 'o';
   input->body_ = '|';
   input->legs_ = '^';
 }
-void appendTowerTexture(TowerTexture *input)
+void appendTowerTexture(Tower *input)
 {
   input->top_ = "TTT";
   input->middle_ = " | ";
@@ -62,12 +82,30 @@ void appendMapTextures(MapTextures *input)
   input->map_edges_texture_ = '=';
   input->map_empty_space_textures_ = ' ';
 }
+void appendTowerCoordinates(Tower *input)
+{
+  printf("Please insert coordinates at which you want to place your tower\n");
+  printf("horizontal coordinates(x axis): ");
+  scanf("%d", &input->x_coordinates_);
+  printf("vertical coordinates(y axis): ");
+  scanf("%d", &input->y_coordinates_);
+}
+void hitBoxTower(Tower *input)
+{
+  input->top_x_coordinates_ = input->x_coordinates_ - 1;
+  input->top_y_coordinates_ = input->y_coordinates_ - 2;
+  input->middle_x_coordinates_ = input->x_coordinates_;
+  input->middle_y_coordinates_ = input->y_coordinates_ - 1;
+  input->bottom_x_coordinates_ = input->x_coordinates_ - 1;
+  input->bottom_y_coordinates_ = input->y_coordinates_;
+}
 void appendMapCharacteristics(MapCharacteristics *input)
 {
   printf("Map height: ");
   scanf("%d", &input->height_);
-  printf("Map width: ");
-  scanf("%d", &input->width_);
+  // printf("Map width: ");
+  // scanf("%d", &input->width_);
+  input->width_ = 21;
   input->beginning_row_ = 0;
   input->ending_row_ = input->height_ - 1;
   input->beginning_column_ = 0;
@@ -77,26 +115,26 @@ void printEnemy(EnemyTexture output)
 {
   printf("%c\n%c\n%c\n", output.head_, output.body_, output.legs_);
 }
-void printTower(TowerTexture output)
+void printTower(Tower output)
 {
   printf("%s\n%s\n%s\n", output.top_, output.middle_, output.bottom_);
 }
 void printMap(MapCharacteristics the_map, MapTextures map_textures)
 {
-  for(int index_1 = 0; index_1 < the_map.height_; index_1++)
-  {   
-    for(int index_2 = 0; index_2 < the_map.width_; index_2++)
+  for(int y_axis = 0; y_axis < the_map.height_; y_axis++)
+  {
+    for(int x_axis = 0; x_axis < the_map.width_; x_axis++)
     {
-      if((inBetween(index_1, the_map.beginning_row_, the_map.ending_row_) == IN_RANGE) && (inBetween(index_2, the_map.beginning_column_, the_map.ending_column_) == IN_RANGE))
+      if((inBetween(y_axis, the_map.beginning_row_, the_map.ending_row_) == IN_RANGE) && (inBetween(x_axis, the_map.beginning_column_, the_map.ending_column_) == IN_RANGE))
       {
-        if(index_2 == 18)
+        if(x_axis == (ceil_My((double)the_map.width_ / 2)) - 2)
         {
           for (int index_3 = 0; index_3 < 3; index_3++)
           {
             printf("%c", map_textures.path_texture_);
             if(index_3 == 2)
             {
-              index_2 += index_3;
+              x_axis += index_3;
             }
           }
         }
@@ -117,7 +155,7 @@ void printMap(MapCharacteristics the_map, MapTextures map_textures)
 int main(void)
 {
   EnemyTexture enemy_general;
-  TowerTexture tower_general;
+  Tower tower_general;
   MapCharacteristics map;
   MapTextures the_textures;
   appendEnemyTexture(&enemy_general);
@@ -127,5 +165,6 @@ int main(void)
   // printEnemy(enemy_general);
   // printTower(tower_general);
   printMap(map, the_textures);
+  // printf("%d", ceil_My(10));
   return 0;
 }
